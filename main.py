@@ -5,18 +5,26 @@ from tkinter import messagebox
 from tkinter import *
 import os
 
-username = os.getenv("my_username")
-password = os.getenv("my_password")
+import functions as func
 
-def checker(event = None):
-    if txtUSERNAME.get() == username and txtPASSWORD.get() == password:
-        print("VALID")
-        messagebox.showinfo("LOGIN", "Username and Password is VALID")
-
-width = 320
-height = 200
+width = 600
+height = 350
 
 root = tk.Tk()
+
+def openNew():
+    messagebox.askquestion("New window", "All changes will not be saved")
+    if 'yes':
+        root.destroy()
+        func.openNew()
+    else:
+        func.nothing()
+
+def closeApp():
+    messagebox.askokcancel("Exit", "Are you sure you want to close application?")
+    if 'yes':
+        root.destroy()
+        func.logout()
 
 screen_width = root.winfo_screenwidth()
 screen_height = root.winfo_screenheight()
@@ -27,47 +35,15 @@ y = (screen_height - height) // 2
 dimension = f"{width}x{height}+{x}+{y}"
 
 root.geometry(dimension)
-root.title("Login")
+root.title("Main")
 root.resizable(0, 0)
 
-labelframe = tk.Frame(root, bd=5, relief="solid")
-labelframe.pack(fill="x")
+menubar = Menu(root)
+filemenu = Menu(menubar, tearoff=0)
+filemenu.add_command(label="New", command=openNew)
+filemenu.add_command(label="Open", command=func.nothing)
+filemenu.add_command(label="Exit", command=closeApp)
+menubar.add_cascade(label="File", menu=filemenu)
 
-mainframe = tk.Frame(root)
-mainframe.pack(fill="both")
-
-mainframe.columnconfigure(0, weight=2)
-mainframe.columnconfigure(1, weight=3)
-mainframe.columnconfigure(2, weight=3)
-mainframe.columnconfigure(3, weight=2)
-
-mainframe.rowconfigure(1, weight=1)
-mainframe.rowconfigure(2, weight=2)
-mainframe.rowconfigure(3, weight=1)
-mainframe.rowconfigure(4, weight=2)
-mainframe.rowconfigure(5, weight=1)
-mainframe.rowconfigure(6, weight=2)
-
-fontObj = tkFont.Font(size=15, weight="bold")
-labelfont = tkFont.Font(size=10, weight="bold")
-reliefValue = "sunken"
-labelReliefValue = "solid"
-tk.Label(labelframe, text="USER LOGIN", fg="green", bg="black", font=fontObj).pack(fill="x")
-
-tk.Label(mainframe).grid(row=1, columnspan=4, sticky="nsew")
-
-#USERNAME
-txtUSERNAME = StringVar()
-tk.Label(mainframe, text="Username", fg="green", font=labelfont).grid(row=2, column=1, sticky="nsew", pady=5)
-tk.Entry(mainframe, relief=reliefValue, textvariable=txtUSERNAME).grid(row=2, column=2, sticky="nsew", pady=5)
-
-#PASSWORD
-txtPASSWORD = StringVar()
-tk.Label(mainframe, text="Password", fg="green", font=labelfont).grid(row=3, column=1, sticky="nsew")
-tk.Entry(mainframe, relief=reliefValue, show = "*", textvariable=txtPASSWORD).grid(row=3, column=2, sticky="nsew")
-
-tk.Label(mainframe).grid(row=4, columnspan=4, sticky="nsew")
-
-tk.Button(mainframe, text="Login", fg="green", bd=1, relief="ridge", font=labelfont, command=checker).grid(row=6, column=1, columnspan=2, sticky="nsew")
-
+root.config(menu=menubar)
 root.mainloop()
